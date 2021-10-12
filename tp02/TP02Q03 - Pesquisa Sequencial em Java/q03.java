@@ -48,7 +48,7 @@ public class q03 {
 
         try {
             RandomAccessFile log = new RandomAccessFile("matricula_sequencial.txt", "rw");
-            log.writeChars(String.format("729414\t%d\t%d", totalRuntime / 1000, comparisons));
+            log.writeChars(String.format("Matricula: 729414\tRuntime: %d\tNumero de comparacoes: %d", totalRuntime, comparisons));
             log.close();
         } catch (Exception e) {
             System.out.println(e);
