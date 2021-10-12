@@ -152,42 +152,14 @@ public class Serie {
     //MARK - Other methods
 
     public String removeTags(String line) {
-        String auxString = "";
-        int i = 0;
-        while (i < line.length()) {
-            if (line.charAt(i) == '<') {
-                i++;
-                while (line.charAt(i) != '>')
-                    i++;
-            } else if (line.charAt(i) == '&') {
-                // mesmo tratamento de cima mas para outras exceções presentes em alguns outros
-                // arquivos
-                i++;
-                while (line.charAt(i) != ';')
-                    i++;
-            } else { // o que estiver fora das tags é concatenado a String auxString a ser retornada
-                auxString += line.charAt(i);
-            }
-            i++;
-        }
-        return auxString;
+       line = line.replaceAll("<.*?>", ""); //removing tags
+       line = line.replaceAll("&.*?;", ""); //removing weird stuff 
+       return line;
     }
 
-    // método para tratar o nome do arquivo e retornar o nome da série
-    public String searchName(String fileName) {
-        String auxString = "";
-        for (int i = 0; i < fileName.length(); i++) {
-            if (fileName.charAt(i) == '_') {
-                // caso o caracter na posição i seja igual ao '_' a variável auxString recebe um
-                // espaço em branco
-                auxString += ' ';
-            } else { // caso não tenha espaço em branco o caracter é concatenado à string auxString
-                auxString += fileName.charAt(i);
-            }
-        }
-        // retorno da substring auxString retirando os 5 últimos caracteres
-        // relacionados à extensão do arquivo
-        return auxString.substring(0, auxString.length() - 5);
+    // retrieving the name of the series
+    public String searchName(String fileName) {    
+        return fileName.replaceAll("(.html)", "").replaceAll("_", " ");
     }
 
     public void readClass(String fileName) {
@@ -196,44 +168,35 @@ public class Serie {
             FileReader fileReader = new FileReader(file);
             BufferedReader br = new BufferedReader(fileReader);
 
-            // set nome da série
             this.name = searchName(fileName);
 
-            // set Formato da série
             while (!br.readLine().contains("Formato"));
             this.format = removeTags(br.readLine());
 
-            // set duração da série
             while (!br.readLine().contains("Duração"));
             this.length = removeTags(br.readLine());
 
-            // set país da série
             while (!br.readLine().contains("País de origem"));
             this.country = removeTags(br.readLine());
 
-            // set idioma da série
             while (!br.readLine().contains("Idioma original"));
             this.language = removeTags(br.readLine());
 
-            // set emissora da série
             while (!br.readLine().contains("Emissora de televisão"));
             this.broadcaster = removeTags(br.readLine());
 
-            // set transmissão original da série
             while (!br.readLine().contains("Transmissão original"));
             this.originalStream = removeTags(br.readLine());
 
-            // set temporadas da série
             while (!br.readLine().contains("N.º de temporadas"));
             this.numberOfSeasons = justInt(removeTags(br.readLine()));
 
-            // set episódios da série
             while (!br.readLine().contains("N.º de episódios"));
             this.numberOfEpisodes = justInt(removeTags(br.readLine()));
 
-            // método para mostrar a classe
             this.printClass();
             br.close();
+
         } catch (FileNotFoundException e) {
             System.out.println("Unable to open file '" + fileName + "'");
         } catch (IOException e) {
@@ -251,8 +214,6 @@ public class Serie {
                 break;
             }
             serie.readClass(filename);
-        }while(!filename.equals("FIM"));
-        
+        }while(!filename.equals("FIM"));     
     }
-
 }
