@@ -24,9 +24,11 @@ public class q03 {
         while (true) {
             String line = scanner.nextLine();
 
-            comparisons++;
             if (line.equals("FIM"))
                 break;
+            else {
+                comparisons++;
+            }
 
             boolean isEqualToLine = false;
 
