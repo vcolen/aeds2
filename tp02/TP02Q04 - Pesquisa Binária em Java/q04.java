@@ -38,12 +38,13 @@ public class q04 {
             int lower = 0;
 
             while (true) {
+                //Binary Search
                 int pivot = (higher + lower) / 2;
                 String serieName = list.get(pivot);
 
                 int difference = line.compareTo(serieName);
 
-                if (difference == 0) {
+                if (difference == 0) { //they are equal
                     comparisons++;
                     isEqualToLine = true;
                     break;
@@ -64,11 +65,8 @@ public class q04 {
         }
 
         long totalRunTime = Instant.now().toEpochMilli() - programStartTime;
-
         RandomAccessFile log = new RandomAccessFile("matricula_binaria.txt", "rw");
-
         log.writeChars(String.format("729414\t%d\t%d", totalRunTime, comparisons));
-
         log.close();
     }
 }
