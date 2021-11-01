@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define MAX_FIELD_SIZE 100
 
@@ -83,6 +84,7 @@ void swap(Serie list[], int i, int j)
     list[j] = temp;
 }
 
+int comparisons = 0;
 // Recursive function to perform selection sort on subarray
 void selectionSort(Serie list[], int i, int n)
 {
@@ -92,7 +94,9 @@ void selectionSort(Serie list[], int i, int n)
         if (strcmp(list[j].pais, list[min].pais) < 0 || ((strcmp(list[j].pais, list[min].pais) == 0) && (strcmp(list[j].nome, list[min].nome) < 0)))
         {
             min = j;
+            comparisons++;
         }
+        comparisons++;
     }
 
     swap(list, min, i);
@@ -100,6 +104,7 @@ void selectionSort(Serie list[], int i, int n)
     if (i + 1 < n)
     {
         selectionSort(list, i + 1, n);
+        comparisons++;
     }
 }
 
@@ -196,25 +201,30 @@ void ler_serie(Serie *serie, char *html)
     ptr = strstr(ptr, "N.º de episódios");
     ptr = strstr(ptr, "<td");
     sscanf(extrair_texto(ptr, texto), "%d", &serie->num_episodios);
-
 }
 
 #define MAX_LINE_SIZE 250
-#define PREFIXO "./tmp/series/"
+#define PREFIXO "/tmp/series/"
 // #define PREFIXO "../entrada e saida/tp02/series/"
 
 int isFim(char line[])
 {
     return line[0] == 'F' && line[1] == 'I' && line[2] == 'M';
 }
+void createLog(float timeSpent, int comparisons)
+{
+    FILE *log_file = fopen("matricula_selecaoRecursiva.txt", "w");
+    fprintf(log_file, "729414\t%f\t%d ", timeSpent, comparisons);
+}
 
 int main()
 {
+    double time_spent = 0.0;
+    clock_t begin = clock();
     Serie serie;
     Serie serieList[100];
     size_t tam_prefixo = strlen(PREFIXO);
     char line[MAX_LINE_SIZE];
-
     strcpy(line, PREFIXO);
     readline(line + tam_prefixo, MAX_LINE_SIZE);
     int i = 0;
@@ -235,6 +245,11 @@ int main()
     {
         print_serie(&serieList[j]);
     }
+
+    clock_t end = clock();
+    time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
+
+    createLog(time_spent, comparisons);
 
     return EXIT_SUCCESS;
 }
